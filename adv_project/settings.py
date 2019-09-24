@@ -14,6 +14,7 @@ import os
 from decouple import config, Csv
 import dj_database_url
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,12 +28,14 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-#ALLOWED_HOSTS=['127.0.0.1, localhost']
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
-
+# ALLOWED_HOSTS = [
+#     'localhost, 127.0.0.1, .herokuapp.com/'
+# ]
 
 # Forever-cacheable and compression support
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # Application definition
 
@@ -104,7 +107,7 @@ WSGI_APPLICATION = 'adv_project.wsgi.application'
 
 DATABASES = {}
 
-DATABASES['default'] = dj_database_url.config(default=config('DATABASE_URL'), conn_max_age =600)
+DATABASES['default'] = dj_database_url.config(default=config('DATABASE_URL'))
 
 
 # Password validation
@@ -158,6 +161,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 import django_heroku
 django_heroku.settings(locals())
+
+# Allows to work on local by disabling ssl
+del DATABASES['default']['OPTIONS']['sslmode']
